@@ -1,6 +1,6 @@
 package dev.yohans.models;
 
-import dev.yohans.models.dtos.LetterPost;
+import dev.yohans.models.dtos.Letter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -14,7 +14,7 @@ import java.util.Date;
 @Entity(name = "blog_post")
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
-public class BlogPost {
+public class Post {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "{titulo.obrigatorio}") @Size(max = 256, message = "{titulo.tamanhoinvalido}")
@@ -24,7 +24,7 @@ public class BlogPost {
     private Date publicationDate;
     private boolean isVisible;
 
-    public BlogPost(LetterPost dto){
+    public Post(Letter dto){
         this.title = dto.title();
         this.content = dto.content();
         this.publicationDate = new Date();
