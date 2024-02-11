@@ -1,12 +1,10 @@
 package dev.yohans.models;
 
+import dev.yohans.models.dtos.LetterPost;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -15,7 +13,7 @@ import java.util.Date;
 @Table(name = "blog_posts")
 @Entity(name = "blog_post")
 @EqualsAndHashCode(of = "id")
-@AllArgsConstructor
+@NoArgsConstructor
 public class BlogPost {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,5 +22,12 @@ public class BlogPost {
     @NotBlank(message = "{conteudo.obrigatorio}")
     private String content;
     private Date publicationDate;
-    private boolean IsVisible = true;
+    private boolean isVisible;
+
+    public BlogPost(LetterPost dto){
+        this.title = dto.title();
+        this.content = dto.content();
+        this.publicationDate = new Date();
+        this.isVisible = true;
+    }
 }
