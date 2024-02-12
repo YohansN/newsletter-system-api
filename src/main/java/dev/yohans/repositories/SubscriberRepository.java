@@ -11,4 +11,7 @@ import java.util.List;
 public interface SubscriberRepository extends JpaRepository<Subscriber, Integer> {
     @Query("SELECT s.email FROM Subscriber s WHERE s.isActive = true")
     List<String> findAllByIsActiveTrue();
+
+    @Query("SELECT s FROM Subscribers s WHERE s.email = :email")
+    Subscriber findSubscriberByEmail(String email);
 }
