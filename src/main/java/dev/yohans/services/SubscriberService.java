@@ -22,6 +22,10 @@ public class SubscriberService {
         return true;
     }
 
+    public List<Subscriber> getAllSubscribers(){
+        return subscriberRepository.findAll();
+    }
+
     public List<String> getAllEmailsFromActiveSubscribers(){
         List<String> emailList = subscriberRepository.findAllByIsActiveTrue();
         return emailList;

@@ -2,10 +2,10 @@ package dev.yohans.controllers;
 
 import dev.yohans.models.Post;
 import dev.yohans.models.dtos.Letter;
-import dev.yohans.repositories.PostRepository;
-import jakarta.transaction.Transactional;
+import dev.yohans.services.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,22 +16,22 @@ import java.util.List;
 public class PostController {
 
     @Autowired
-    PostRepository postRepository;
+    PostService postService;
 
     @PostMapping
-    @Transactional
-    public ResponseEntity postingLetter(@RequestBody @Valid Letter dto){
-        var post = new Post(dto);
-        postRepository.save(post);
-
-        return ResponseEntity.ok("Post cadastrado com sucesso.");
-
+    public ResponseEntity<?> postingLetter(@RequestBody @Valid Letter postDto){
+        if(postService.postingLetter(postDto))
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping
-    public List<Post> getAllPosts(){
-        var res = postRepository.findAll();
-        return res;
+    public ResponseEntity<List<Post>> getAllPosts(){
+        var response = postService.getAllPosts();
+        if(response!=null){
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
