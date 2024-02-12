@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,10 @@ public class SubscriberService {
         }
         var subscriber = sub.get();
         if(!subscriber.getIsActive()){ //Email previamente cadastrado porém inativo.
+            subscriber.setName(dto.name());
             subscriber.setIsActive(true);
+            subscriber.setSignupDate(new Date());
+            subscriberRepository.save(subscriber);
             return true;
         }
 
