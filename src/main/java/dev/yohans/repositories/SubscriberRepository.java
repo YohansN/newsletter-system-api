@@ -1,6 +1,7 @@
 package dev.yohans.repositories;
 
 import dev.yohans.models.Subscriber;
+import jakarta.validation.Valid;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,5 +15,5 @@ public interface SubscriberRepository extends JpaRepository<Subscriber, Integer>
     List<String> findAllByIsActiveTrue();
 
     @Query("SELECT s FROM Subscriber s WHERE s.email = :email")
-    Optional<Subscriber> findSubscriberByEmail(String email);
+    Optional<Subscriber> findSubscriberByEmail(@Valid String email);
 }

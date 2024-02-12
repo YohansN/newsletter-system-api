@@ -41,8 +41,20 @@ public class SubscriberService {
         return subscriberRepository.findAll();
     }
 
+    @Transactional
+    public boolean cancelSubscription(String email){
+        Optional<Subscriber> sub = subscriberRepository.findSubscriberByEmail(email);
+
+        if(sub.isEmpty())
+            return false;
+
+        var subscriber = sub.get();
+        subscriber.setIsActive(false);
+        subscriberRepository.save(subscriber);
+        return true;
+    }
+
     public List<String> getAllEmailsFromActiveSubscribers(){
-        List<String> emailList = subscriberRepository.findAllByIsActiveTrue();
-        return emailList;
+        return subscriberRepository.findAllByIsActiveTrue();
     }
 }

@@ -1,11 +1,14 @@
 package dev.yohans.controllers;
 
 import dev.yohans.models.Subscriber;
+import dev.yohans.models.dtos.CancelSubscription;
 import dev.yohans.models.dtos.UserRegistration;
 import dev.yohans.repositories.SubscriberRepository;
 import dev.yohans.services.SubscriberService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +30,12 @@ public class SubscriberController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PostMapping("/cancel")
+    public ResponseEntity<?> cancelSubscription(@RequestBody @Valid CancelSubscription dto){
+        if(subscriberService.cancelSubscription(dto.email()))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
     @GetMapping
     public ResponseEntity<List<Subscriber>> getAllSubscribers(){
         var response = subscriberService.getAllSubscribers();
