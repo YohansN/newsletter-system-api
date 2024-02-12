@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SubscriberService {
@@ -19,16 +20,16 @@ public class SubscriberService {
     @Transactional
     public boolean userRegister(@Valid UserRegistration dto){
 
-        var sub = subscriberRepository.findSubscriberByEmail(dto.email());
+        Optional<Subscriber> sub = subscriberRepository.findSubscriberByEmail(dto.email());
 
-        if(sub==null){ //Novo cadastro
+        if(sub.isEmpty()){ //Novo cadastro
             var subscriber = new Subscriber(dto);
             subscriberRepository.save(subscriber);
             return true;
         }
-
-        if(!sub.getIsActive()){ //Email previamente cadastrado porém inativo.
-            sub.setIsActive(true);
+        var subscriber = sub.get();
+        if(!subscriber.getIsActive()){ //Email previamente cadastrado porém inativo.
+            subscriber.setIsActive(true);
             return true;
         }
 
