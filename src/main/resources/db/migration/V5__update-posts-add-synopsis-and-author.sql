@@ -1,0 +1,3 @@
+ALTER TABLE blog_posts
+ADD COLUMN author VARCHAR(256),
+ADD COLUMN synopsis VARCHAR(256);
