@@ -6,6 +6,7 @@ import dev.yohans.repositories.SubscriberRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -41,8 +42,8 @@ public class SubscriberService {
         return false;
     }
 
-    public List<Subscriber> getAllSubscribers(){
-        return subscriberRepository.findAll();
+    public List<Subscriber> getAllSubscribers(Pageable pageable){
+        return subscriberRepository.findAll(pageable).stream().toList();
     }
 
     @Transactional

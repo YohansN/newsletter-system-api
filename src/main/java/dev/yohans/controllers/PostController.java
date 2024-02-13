@@ -5,6 +5,8 @@ import dev.yohans.models.dtos.Letter;
 import dev.yohans.services.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +28,8 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Post>> getAllPosts(){
-        var response = postService.getAllPosts();
+    public ResponseEntity<List<Post>> getAllPosts(@PageableDefault(size = 10, page = 0) Pageable pageable){
+        var response = postService.getAllPosts(pageable);
         if(response!=null){
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }

@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +39,8 @@ public class SubscriberController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     @GetMapping
-    public ResponseEntity<List<Subscriber>> getAllSubscribers(){
-        var response = subscriberService.getAllSubscribers();
+    public ResponseEntity<List<Subscriber>> getAllSubscribers(@PageableDefault(size = 10, page = 0) Pageable pageable){
+        var response = subscriberService.getAllSubscribers(pageable);
         if(response != null)
             return ResponseEntity.status(HttpStatus.OK).body(response);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

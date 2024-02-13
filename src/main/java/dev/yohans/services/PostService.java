@@ -6,6 +6,8 @@ import dev.yohans.models.dtos.Letter;
 import dev.yohans.repositories.PostRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +38,7 @@ public class PostService {
         return true;
     }
 
-    public List<Post> getAllPosts(){
-        return postRepository.findAll();
+    public List<Post> getAllPosts(Pageable pageable){
+        return postRepository.findAll(pageable).stream().toList();
     }
 }
