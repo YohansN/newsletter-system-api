@@ -2,6 +2,7 @@ package dev.yohans.controllers;
 
 import dev.yohans.models.Post;
 import dev.yohans.models.dtos.Letter;
+import dev.yohans.models.dtos.PostDetails;
 import dev.yohans.services.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Post>> getAllPosts(@PageableDefault(size = 10, page = 0) Pageable pageable){
+    public ResponseEntity<List<PostDetails>> getAllPosts(@PageableDefault(size = 10, page = 0) Pageable pageable){
         var response = postService.getAllPosts(pageable);
         if(response!=null){
             return ResponseEntity.status(HttpStatus.OK).body(response);

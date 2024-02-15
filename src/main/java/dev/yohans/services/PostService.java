@@ -3,8 +3,10 @@ package dev.yohans.services;
 import dev.yohans.models.Email;
 import dev.yohans.models.Post;
 import dev.yohans.models.dtos.Letter;
+import dev.yohans.models.dtos.PostDetails;
 import dev.yohans.repositories.PostRepository;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -39,8 +42,11 @@ public class PostService {
         return true;
     }
 
-    public List<Post> getAllPosts(Pageable pageable){
-        return postRepository.findAll(pageable).stream().toList();
+    public List<PostDetails> getAllPosts(Pageable pageable){
+        var postList = postRepository.findAll(pageable).stream().toList();
+        ModelMapper modelMapper = new ModelMapper();
+        //Transformar Lista de Post em Lista de PostDetails.
+        return postList.stream().map(post -> modelMapper.map(post, PostDetails.class)).collect(Collectors.toList());
     }
 
     public Post getPostById(Long id){
