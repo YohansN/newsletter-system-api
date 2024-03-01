@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @RestController
@@ -43,5 +44,10 @@ public class PostController {
         if(response!=null)
             return ResponseEntity.status(HttpStatus.OK).body(response);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/count")
+    public Long getTotalNumberOfPosts(){
+        return postService.getTotalNumberOfPosts();
     }
 }
