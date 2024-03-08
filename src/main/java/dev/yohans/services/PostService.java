@@ -44,7 +44,8 @@ public class PostService {
     }
 
     public List<PostDetails> getAllPosts(Pageable pageable){
-        var postList = postRepository.findAllByOrderByPublicationDateDesc(pageable).stream().toList();
+        //var postList = postRepository.findAllByOrderByPublicationDateDesc(pageable).stream().toList();
+        var postList = postRepository.findAll(pageable).stream().toList();
         ModelMapper modelMapper = new ModelMapper();
         //Transformar Lista de Post em Lista de PostDetails.
         return postList.stream().map(post -> modelMapper.map(post, PostDetails.class)).collect(Collectors.toList());
