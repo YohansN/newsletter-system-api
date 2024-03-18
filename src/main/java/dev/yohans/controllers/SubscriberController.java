@@ -28,7 +28,7 @@ public class SubscriberController {
     @Transactional
     public ResponseEntity<?> userRegister(@RequestBody @Valid UserRegistration dto){
         if(subscriberService.userRegister(dto))
-            return ResponseEntity.status(HttpStatus.OK).body("Assinatura concluída!");
+            return ResponseEntity.status(HttpStatus.OK).build();
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
