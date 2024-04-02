@@ -1,6 +1,6 @@
-package dev.yohans.models;
+package dev.yohans.core.models;
 
-import dev.yohans.models.dtos.Letter;
+import dev.yohans.core.models.dtos.Letter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

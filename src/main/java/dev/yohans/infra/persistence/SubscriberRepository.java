@@ -1,6 +1,6 @@
-package dev.yohans.repositories;
+package dev.yohans.infra.persistence;
 
-import dev.yohans.models.Subscriber;
+import dev.yohans.core.models.Subscriber;
 import jakarta.validation.Valid;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

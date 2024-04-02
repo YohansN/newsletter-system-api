@@ -1,15 +1,11 @@
-package dev.yohans.controllers;
+package dev.yohans.infra.controllers;
 
-import dev.yohans.models.Subscriber;
-import dev.yohans.models.dtos.CancelSubscription;
-import dev.yohans.models.dtos.UserRegistration;
-import dev.yohans.repositories.SubscriberRepository;
-import dev.yohans.services.SubscriberService;
+import dev.yohans.application.interfaces.ISubscriberService;
+import dev.yohans.core.models.Subscriber;
+import dev.yohans.core.models.dtos.CancelSubscription;
+import dev.yohans.core.models.dtos.UserRegistration;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -21,8 +17,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/subscriber")
 public class SubscriberController {
-    @Autowired
-    SubscriberService subscriberService;
+    private final ISubscriberService subscriberService;
+
+    public SubscriberController(ISubscriberService subscriberService) {
+        this.subscriberService = subscriberService;
+    }
 
     @PostMapping
     @Transactional

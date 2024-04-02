@@ -1,6 +1,6 @@
-package dev.yohans.models;
+package dev.yohans.core.models;
 
-import dev.yohans.models.dtos.UserRegistration;
+import dev.yohans.core.models.dtos.UserRegistration;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;

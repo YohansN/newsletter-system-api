@@ -1,4 +1,4 @@
-package dev.yohans.models;
+package dev.yohans.core.models;
 
 import lombok.Getter;
 import lombok.Setter;

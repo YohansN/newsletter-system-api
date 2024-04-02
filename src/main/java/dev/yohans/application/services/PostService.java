@@ -1,34 +1,38 @@
-package dev.yohans.services;
+package dev.yohans.application.services;
 
-import dev.yohans.models.Email;
-import dev.yohans.models.Post;
-import dev.yohans.models.dtos.Letter;
-import dev.yohans.models.dtos.PostDetails;
-import dev.yohans.repositories.PostRepository;
+import dev.yohans.application.interfaces.IEmailService;
+import dev.yohans.application.interfaces.IPostService;
+import dev.yohans.application.interfaces.ISubscriberService;
+import dev.yohans.application.gateways.PostGateway;
+import dev.yohans.core.models.Email;
+import dev.yohans.core.models.Post;
+import dev.yohans.core.models.dtos.Letter;
+import dev.yohans.core.models.dtos.PostDetails;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class PostService {
+public class PostService implements IPostService {
+    private final PostGateway postGateway;
+    private final ISubscriberService subscriberService;
+    private final IEmailService emailService;
 
-    @Autowired PostRepository postRepository;
-    @Autowired SubscriberService subscriberService;
-    @Autowired EmailService emailService;
+    public PostService(PostGateway postGateway, ISubscriberService subscriberService, IEmailService emailService) {
+        this.postGateway = postGateway;
+        this.subscriberService = subscriberService;
+        this.emailService = emailService;
+    }
 
     @Transactional
     public boolean postingLetter(Letter letter){
         //Salva no banco de dados
         var post = new Post(letter);
-        postRepository.save(post);
+        postGateway.savePost(post);
 
         try {
             //Envia para o email dos inscritos
@@ -44,16 +48,14 @@ public class PostService {
     }
 
     public List<PostDetails> getAllPosts(Pageable pageable){
-        //var postList = postRepository.findAllByOrderByPublicationDateDesc(pageable).stream().toList();
-        var postList = postRepository.findAll(pageable).stream().toList();
+        var postList = postGateway.findAllPosts(pageable);
         ModelMapper modelMapper = new ModelMapper();
-        //Transformar Lista de Post em Lista de PostDetails.
         return postList.stream().map(post -> modelMapper.map(post, PostDetails.class)).collect(Collectors.toList());
     }
 
     public Post getPostById(Long id){
-        Optional<Post> response = postRepository.findById(id);
-        Post post;
+        Optional<Post> response = postGateway.findPostById(id);
+        Post post = new Post();
 
         if(response.isPresent()){
             post = response.get();
@@ -64,6 +66,6 @@ public class PostService {
     }
 
     public Long getTotalNumberOfPosts(){
-        return postRepository.countBy();
+        return postGateway.getTotalNumberOfPosts();
     }
 }

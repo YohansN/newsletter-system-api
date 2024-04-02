@@ -1,4 +1,4 @@
-package dev.yohans.models.dtos;
+package dev.yohans.core.models.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
