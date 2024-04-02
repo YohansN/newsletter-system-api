@@ -2,6 +2,7 @@ package dev.yohans.application.services;
 
 import dev.yohans.application.interfaces.ISubscriberService;
 import dev.yohans.application.gateways.SubscriberGateway;
+import dev.yohans.core.exceptions.subscriber.*;
 import dev.yohans.core.models.Subscriber;
 import dev.yohans.core.models.dtos.UserRegistration;
 import jakarta.transaction.Transactional;
@@ -22,46 +23,66 @@ public class SubscriberService implements ISubscriberService {
     }
 
     @Transactional
-    public boolean userRegister(@Valid UserRegistration dto){
+    public void userRegister(@Valid UserRegistration dto){
 
         Optional<Subscriber> sub = subscriberGateway.findSubscriberByEmail(dto.email());
 
         if(sub.isEmpty()){ //Novo cadastro
             var subscriber = new Subscriber(dto);
-            subscriberGateway.saveSubscriber(subscriber);
-            return true;
-        }
-        var subscriber = sub.get();
-        if(!subscriber.getIsActive()){ //Email previamente cadastrado porém inativo.
-            subscriber.setName(dto.name());
-            subscriber.setIsActive(true);
-            subscriber.setSignupDate(new Date());
-            subscriberGateway.saveSubscriber(subscriber);
-            return true;
+            try {
+                subscriberGateway.saveSubscriber(subscriber);
+            }catch (Exception ex){
+                throw new FailedToSaveSubscriber();
+            }
         }
 
-        //Email já cadastrado e ativo.
-        return false;
+        if(sub.isPresent()){
+            var subscriber = sub.get();
+
+            if(!subscriber.getIsActive()){ //Email previamente cadastrado porém inativo.
+                subscriber.setName(dto.name());
+                subscriber.setIsActive(true);
+                subscriber.setSignupDate(new Date());
+                try{
+                    subscriberGateway.saveSubscriber(subscriber);
+                }catch (Exception ex){
+                    throw new FailedToSaveSubscriber();
+                }
+            }
+            else throw new SubscriberAlreadyExistsException(); //Email já cadastrado e ativo.
+        }
     }
 
     public List<Subscriber> getAllSubscribers(Pageable pageable){
-        return subscriberGateway.findAllSubscribers(pageable);
+        try{
+            return subscriberGateway.findAllSubscribers(pageable);
+        }catch (Exception ex){
+            throw new FailedToFindAllSubscribers();
+        }
     }
 
     @Transactional
-    public boolean cancelSubscription(String email){
+    public void cancelSubscription(String email){
         Optional<Subscriber> sub = subscriberGateway.findSubscriberByEmail(email);
 
-        if(sub.isEmpty())
-            return false;
+        if(sub.isEmpty()) throw new SubscriberNotFoundException();
 
         var subscriber = sub.get();
         subscriber.setIsActive(false);
-        subscriberGateway.saveSubscriber(subscriber);
-        return true;
+
+        try{
+            subscriberGateway.saveSubscriber(subscriber);
+        }catch (Exception ex){
+            throw new FailedToSaveSubscriber();
+        }
     }
 
     public List<String> getAllEmailsFromActiveSubscribers(){
-        return subscriberGateway.findAllSubscribersByIsActiveTrue();
+        try {
+            return subscriberGateway.findAllSubscribersByIsActiveTrue();
+        }catch (Exception ex){
+            throw new FailedToFindActiveSubscribersException();
+        }
+
     }
 }

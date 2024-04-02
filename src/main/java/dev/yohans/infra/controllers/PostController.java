@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("api/v1/post")
 public class PostController {
 
     private final IPostService postService;
@@ -24,26 +24,20 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<?> postingLetter(@RequestBody @Valid Letter postDto){
-        if(postService.postingLetter(postDto))
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        postService.postingLetter(postDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<List<PostDetails>> getAllPosts(@PageableDefault(size = 10, page = 0) Pageable pageable){
         var response = postService.getAllPosts(pageable);
-        if(response!=null){
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Post> getPostById(@PathVariable Long id){
         Post response = postService.getPostById(id);
-        if(response!=null)
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/count")

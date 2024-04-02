@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/subscriber")
+@RequestMapping("api/v1/subscriber")
 public class SubscriberController {
     private final ISubscriberService subscriberService;
 
@@ -26,22 +26,20 @@ public class SubscriberController {
     @PostMapping
     @Transactional
     public ResponseEntity<?> userRegister(@RequestBody @Valid UserRegistration dto){
-        if(subscriberService.userRegister(dto))
-            return ResponseEntity.status(HttpStatus.OK).build();
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        subscriberService.userRegister(dto);
+        return ResponseEntity.status(HttpStatus.OK).body("Assinante registrado com sucesso.");
     }
 
     @PostMapping("/cancel")
     public ResponseEntity<?> cancelSubscription(@RequestBody @Valid CancelSubscription dto){
-        if(subscriberService.cancelSubscription(dto.email()))
-            return new ResponseEntity<>(HttpStatus.OK);
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        subscriberService.cancelSubscription(dto.email());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     @GetMapping
     public ResponseEntity<List<Subscriber>> getAllSubscribers(@PageableDefault(size = 10, page = 0) Pageable pageable){
         var response = subscriberService.getAllSubscribers(pageable);
-        if(response != null)
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if(response == null)
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

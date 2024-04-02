@@ -16,8 +16,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 @Configuration
 public class BeanConfiguration {
     @Bean
-    PostService postService(PostRepositoryGateway postRepositoryGateway, ISubscriberService subscriberService, IEmailService emailService){
-        return new PostService(postRepositoryGateway, subscriberService, emailService);
+    PostService postService(PostRepositoryGateway postRepositoryGateway, IEmailService emailService){
+        return new PostService(postRepositoryGateway, emailService);
     }
     @Bean
     PostRepositoryGateway postRepositoryGateway(PostRepository postRepository){
@@ -34,7 +34,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    EmailService emailService(JavaMailSender javaMailSender){
-        return new EmailService(javaMailSender);
+    EmailService emailService(JavaMailSender javaMailSender, ISubscriberService subscriberService){
+        return new EmailService(javaMailSender, subscriberService);
     }
 }
